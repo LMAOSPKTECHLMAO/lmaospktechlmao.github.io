@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$PKTEC#!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-primary: #06060a;
+    --bg-secondary: #0c0c14;
+    --bg-card: #0f0f1a;
+    --bg-card-hover: #141422;
+    --bg-folder: #0d0d17;
+    --purple-dim: #5b21b6;
+    --purple-mid: #7c3aed;
+    --purple-bright: #a855f7;
+    --purple-glow: #c084fc;
+    --purple-ghost: rgba(168, 85, 247, 0.07);
+    --purple-ghost-mid: rgba(168, 85, 247, 0.14);
+    --text-primary: #e4e4e7;
+    --text-secondary: #a1a1aa;
+    --text-dim: #5a5a6e;
+    --border: rgba(168, 85, 247, 0.1);
+    --border-hover: rgba(168, 85, 247, 0.28);
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--purple-dim); border-radius: 3px; }
+
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(168, 85, 247, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168, 85, 247, 0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-grid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, 0.1) 0%, transparent 55%);
+  }
+  .bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(130px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-orb-1 { width: 600px; height: 600px; background: rgba(91, 33, 182, 0.08); top: -200px; left: -150px; }
+  .bg-orb-2 { width: 400px; height: 400px; background: rgba(168, 85, 247, 0.05); bottom: 10%; right: -100px; }
+
+  .wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6, 6, 10, 0.85);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+  }
+  .nav-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--purple-bright);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-brand span { color: var(--text-primary); }
+  .nav-right { display: flex; align-items: center; gap: 6px; }
+  .nav-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .nav-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    background: var(--purple-ghost);
+  }
+
+  .hero {
+    padding: 80px 0 40px;
+    text-align: center;
+  }
+  .hero-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(2.8rem, 8vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .hero-logo .dollar { color: var(--purple-dim); }
+  .hero-logo .name { color: var(--purple-bright); }
+  .hero-logo .hash { color: var(--text-dim); }
+  .hero-logo .bang { color: var(--red); }
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+  }
+
+  .socials {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.25s;
+  }
+  .social-link:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1);
+  }
+  .social-link svg { flex-shrink: 0; }
+  .social-link.discord:hover { border-color: rgba(88, 101, 242, 0.4); box-shadow: 0 4px 20px rgba(88, 101, 242, 0.1); }
+  .social-link.twitter:hover { border-color: rgba(29, 161, 242, 0.4); box-shadow: 0 4px 20px rgba(29, 161, 242, 0.1); }
+  .social-link.github:hover { border-color: rgba(255, 255, 255, 0.15); box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05); }
+  .social-link.youtube:hover { border-color: rgba(255, 0, 0, 0.3); box-shadow: 0 4px 20px rgba(255, 0, 0, 0.08); }
+  .social-link.telegram:hover { border-color: rgba(0, 136, 204, 0.4); box-shadow: 0 4px 20px rgba(0, 136, 204, 0.1); }
+
+  .social-note {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 8px;
+  }
+
+  .tabs-section { padding: 40px 0 80px; }
+  .tabs-bar {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px 10px 0 0;
+    padding: 6px 6px 0;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: var(--text-secondary); }
+  .tab-btn.active {
+    color: var(--purple-bright);
+    border-bottom-color: var(--purple-bright);
+    background: var(--bg-card);
+  }
+  .tab-count {
+    padding: 1px 7px;
+    border-radius: 4px;
+    background: var(--purple-ghost);
+    font-size: 0.65rem;
+    color: var(--purple-glow);
+  }
+  .tab-btn.active .tab-count { background: var(--purple-ghost-mid); }
+
+  .tab-content-area {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    min-height: 300px;
+  }
+  .tab-panel {
+    display: none;
+    padding: 24px;
+    animation: fadeIn 0.2s ease;
+  }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .folder { margin-bottom: 20px; }
+  .folder:last-child { margin-bottom: 0; }
+  .folder-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-folder);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .folder-header:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+  }
+  .folder-icon {
+    color: var(--yellow);
+    display: flex;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .folder.open .folder-icon { transform: rotate(90deg); }
+  .folder-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .folder-count {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .folder-body {
+    display: none;
+    padding: 6px 0 0 24px;
+    border-left: 1px solid var(--border);
+    margin-left: 20px;
+    margin-top: 8px;
+  }
+  .folder.open .folder-body { display: block; }
+
+  .tool-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: default;
+  }
+  .tool-item:hover { background: var(--purple-ghost); }
+  .tool-file-icon {
+    color: var(--purple-glow);
+    flex-shrink: 0;
+    display: flex;
+  }
+  .tool-info { flex: 1; min-width: 0; }
+  .tool-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .tool-filedesc {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tool-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tool-badge.py { background: rgba(34, 197, 94, 0.1); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.15); }
+  .tool-badge.js { background: rgba(234, 179, 8, 0.1); color: var(--yellow); border: 1px solid rgba(234, 179, 8, 0.15); }
+  .tool-badge.rs { background: rgba(234, 89, 12, 0.1); color: #f97316; border: 1px solid rgba(234, 89, 12, 0.15); }
+  .tool-badge.go { background: rgba(6, 182, 212, 0.1); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.15); }
+  .tool-badge.sh { background: rgba(168, 85, 247, 0.1); color: var(--purple-glow); border: 1px solid rgba(168, 85, 247, 0.15); }
+
+  .tab-empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tab-empty svg { margin-bottom: 12px; opacity: 0.25; display: block; margin-left: auto; margin-right: auto; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-text {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 60px 0 28px; }
+    .socials { gap: 8px; }
+    .social-link { padding: 8px 14px; font-size: 0.75rem; }
+    .social-link .social-label { display: none; }
+    .tab-btn { padding: 9px 12px; font-size: 0.72rem; }
+    .tab-panel { padding: 16px; }
+    .folder-body { margin-left: 12px; padding-left: 14px; }
+    .tool-filedesc { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+
+<nav>
+  <div class="wrapper">
+    <a href="#" class="nav-brand"><span>$</span>PKTEC<span>#</span><span style="color:var(--red)">!</span></a>
+    <div class="nav-right">
+      <a href="https://github.com/YOUR_USERNAME/PKTEC" target="_blank" class="nav-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Star
+      </a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrapper">
+    <div class="hero-logo">
+      <span class="dollar">$</span><span class="name">PKTEC</span><span class="hash">#</span><span class="bang">!</span>
+    </div>
+    <p class="hero-sub">Discord multitools, OSINT modules, and network recon.</p>
+
+    <!--
+      ═══ SOCIAL LINKS ═══
+      Change each href to your actual URL.
+      To remove a social, delete its <a> block.
+      To add one, copy any <a> block and swap icon/label/href/class.
+    -->
+    <div class="socials">
+      <a href="https://discord.gg/a49J77yWg" target="_blank" class="social-link discord">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span class="social-label">Discord</span>
+      </a>
+      <a href="https://x.com/SPKTECHLMAO" target="_blank" class="social-link twitter">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span class="social-label">X</span>
+      </a>
+      <a href="https://github.com/LMAOSPKTECHLMAO" target="_blank" class="social-link github">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        <span class="social-label">GitHub</span>
+      </a>
+      <a href="https://www.youtube.com/channel/UC5aGjh4Fs3IV_2TmxNsSg3g" target="_blank" class="social-link youtube">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span class="social-label">YouTube</span>
+      </a>
+      <a href="https://t.me/@SPKTECHLMAO" target="_blank" class="social-link telegram">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        <span class="social-label">Telegram</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="tabs-section">
+  <div class="wrapper">
+    <div class="tabs-bar" id="tabsBar">
+      <button class="tab-btn active" data-tab="discord">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        Discord <span class="tab-count">0</span>
+      </button>
+      <button class="tab-btn" data-tab="osint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        OSINT <span class="tab-count">0</span>
+      </button>
+      <button class="tab-btn" data-tab="recon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+        Recon <span class="tab-count">0</span>
+      </button>
+      <button class="tab-btn" data-tab="network">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Network <span class="tab-count">0</span>
+      </button>
+      <button class="tab-btn" data-tab="utils">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Utils <span class="tab-count">0</span>
+      </button>
+    </div>
+
+    <div class="tab-content-area">
+
+      <div class="tab-panel active" id="tab-discord">
+        <div class="tab-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          empty — add folders here
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-osint">
+        <div class="tab-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          empty — add folders here
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-recon">
+        <div class="tab-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          empty — add folders here
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-network">
+        <div class="tab-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          empty — add folders here
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-utils">
+        <div class="tab-empty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          empty — add folders here
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrapper">
+    <div class="footer-text">$PKTEC#!</div>
+  </div>
+</footer>
+
+<script>
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + target).classList.add('active');
+    });
+  });
+  function toggleFolder(header) {
+    header.parentElement.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
